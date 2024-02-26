@@ -37,14 +37,22 @@ def get_service(service_id):
         return jsonify({"error": "Service not found"}), 404
 
 # - App.route of add service
-@app.route('/', methods=[''])
+@app.route('/aws_services/add_service', methods=['POST'])
 def add_service():
-    pass
+    if len(aws_services) >= 5:
+        return jsonify({"error": "Maximum number of services reached"}), 400
+    service = request.get_json()
+    if not all(key in service for key in ("id", "service")):
+        return jsonify({"error": "Missing service data"}), 400
+    aws_services.append(service)
+    return jsonify(service), 201
 
 # - App.route of delete service
-@app.route('/', methods=[''])
-def delete_service():
-    pass
+@app.route('/aws_services/delete_service/<int:service_id>', methods=['DELETE'])
+def delete_service(service_id):
+    global aws_services
+    aws_services = [service for service in aws_services if service['id'] != service_id]
+    return jsonify({"message": "Service deleted successfully"})
 
 # - App.route of update service
 @app.route('/', methods=[''])
