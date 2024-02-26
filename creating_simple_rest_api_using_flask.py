@@ -17,20 +17,24 @@ aws_services = [
 ]
 
 # - Base URL
-@app.route('/', methods=[''])
+@app.route('/', methods=['GET'])
 def hello():
-    pass
+    return jsonify({"message": "Welcome to the AWS Services REST API"})
 
 # - App.route of get all 
-@app.route('/', methods=[''])
+@app.route('/aws_services/get_all', methods=['GET'])
 def get_all():
-    pass
+    return jsonify({"aws_services": aws_services})
 
 
 # - App.route of service id
-@app.route('/', methods=[''])
-def get_service():
-    pass
+@app.route('/aws_services/<int:service_id>', methods=['GET'])
+def get_service(service_id):
+    service = next((service for service in aws_services if service['id'] == service_id), None)
+    if service:
+        return jsonify(service)
+    else:
+        return jsonify({"error": "Service not found"}), 404
 
 # - App.route of add service
 @app.route('/', methods=[''])
