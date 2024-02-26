@@ -55,9 +55,15 @@ def delete_service(service_id):
     return jsonify({"message": "Service deleted successfully"})
 
 # - App.route of update service
-@app.route('/', methods=[''])
-def update_service():
-    pass
+@app.route('/aws_services/update_service/<int:service_id>', methods=['PUT'])
+def update_service(service_id):
+    service = next((service for service in aws_services if service['id'] == service_id), None)
+    if not service:
+        return jsonify({"error": "Service not found"}), 404
+    updated_service = request.get_json()
+    if "service" in updated_service:
+        service["service"] = updated_service["service"]
+    return jsonify(service)
 
 
 if __name__ == '__main__':
